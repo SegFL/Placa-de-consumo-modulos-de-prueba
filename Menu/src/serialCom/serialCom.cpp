@@ -1,8 +1,6 @@
-
-
 #include "serialCom.h"
 
-
+// Caracter ASCII para limpiar pantalla \033[2J\033[H
 typedef enum {
     STATUS_IDLE,
     STATUS_INIT,
@@ -11,86 +9,46 @@ typedef enum {
     STATUS_MENU4
 } status_t;
 
-status_t estado=STATUS_INIT;
-bool state_changed=true;
+status_t estado = STATUS_INIT;
+bool state_changed = true;
 static String serialDataBuffer = ""; // Buffer para almacenar datos del puerto serie
+static MenuNode *menu = nullptr;
 
+void clearScreen();
+void moveCursor(int row, int col);
+void serialComInit();
+void SerialComUpdate();
+char readSerialChar();
+void writeSerialComln(String data);
+void writeSerialCom(String data);
+int serialComAvailable();
 
-void updateSerialState(char caracter);
+void serialComInit() {
+    Serial.begin(115200);
+    clearScreen();
+    menu=menuInit();
+    if(menu){
+        writeSerialComln("Menu inicializado");
+    }else{
+        writeSerialComln("Menu no inicializado");
+    }
+    
+    //freeMenu(menu);
 
-
-void serialComInit(){
-    Serial.begin(115200); // Inicializa el puerto serie para depuración
 }
 
-void updateSerialState(char caracter){
-    if(caracter!='\0'){
-        switch(estado){
-            case STATUS_INIT:{
-                if(caracter=='x'){
-                    //writeSerialComln("Entro al menu 2");
-                    estado=STATUS_MENU2;
-                }else if(caracter==27){//27 es el ASCI de ESC
-                    estado= STATUS_INIT;
-                }
-            }state_changed=true;break;
-            case STATUS_MENU2:{
-                switch(caracter){
-                    case 'a':{
-                        estado=STATUS_MENU3;
-                    }break;
-                    case 'b':{
-                        estado=STATUS_MENU4;
-                    }break;
-                    case 27:{
-                        estado=STATUS_INIT;
-                    }break;
-                }
-            }state_changed=true;break;
-            case STATUS_MENU3:{
-                
-            }state_changed=true;break;
-            case STATUS_MENU4:{
-                
-            }state_changed=true;break;
-        }
+void SerialComUpdate() {
+    char charReceived = readSerialChar();
+    
 
+    if (charReceived != '\0' && menu != nullptr) {  // Verificar que el menú está inicializado
+        menuUpdate(charReceived, &menu);
+        //writeSerialComln(String(*menu->title));
+        clearScreen();
+        printNode(menu);
     }
 
 }
-void SerialComUpdate(){
-
-    char charReceived =readSerialChar();
-
-    updateSerialState(charReceived);
-    switch(estado){
-        case STATUS_INIT:{
-            if(state_changed==true){
-                writeSerialComln("Se imprimio STATUS_INIT");
-                state_changed=false;
-            }
-        }
-        case STATUS_MENU2:{
-            if(state_changed==true){
-                writeSerialComln("Se imprimio STATUS_MENU2");
-                state_changed=false;
-            }
-        }
-        case STATUS_MENU3:{
-            if(state_changed==true){
-                writeSerialComln("Se imprimio STATUS_MENU3");
-                state_changed=false;
-            }
-        }
-        case STATUS_MENU4:{
-            if(state_changed==true){
-                writeSerialComln("Se imprimio STATUS_MENU4");
-                state_changed=false;
-            }
-        }
-    }
-}
-
 
 char readSerialChar() {
     if (Serial.available() > 0) { // Verifica si hay datos disponibles en la terminal serie
@@ -101,50 +59,24 @@ char readSerialChar() {
     return '\0'; // Retorna un carácter nulo si no hay datos
 }
 
-
-void writeSerialComln(String data){
-    writeSerialCom(data+"\n\r");
+void writeSerialComln(String data) {
+    writeSerialCom(data + "\n\r");
 }
-void writeSerialCom(String data){
+
+void writeSerialCom(String data) {
     Serial.print(data);
 }
 
-
-
-
-
-
-
-
-void serialComUpdate(){
-    char receivedChar = readSerialChar();
-    if(receivedChar!='\0'){
-        if(receivedChar!='\r'){
-            if(receivedChar!='\n'){
-                serialDataBuffer+=receivedChar;
-            }else{
-            //Serial.println(serialDataBuffer);//Para chequear que se imprima porpantalla(provoca un doble loopback)
-                serialDataBuffer="";
-            }
-        }
-       
-    }
+void clearScreen() {
+    writeSerialCom("\033[2J\033[H");  // Borra pantalla ANSI
 }
 
-//Codigo **bloqueante** para recivir un String
-bool receiveString(String data){
-    
-    char receivedChar = readSerialChar();
-    if(receivedChar!='\0'){
-        if(receivedChar!='\n'){
-            data+=receivedChar;
-        }else{
-            //Serial.println(serialDataBuffer);//Para chequear que se imprima porpantalla(provoca un doble loopback)
-            return true;
-        }
-    }
+void moveCursor(int row, int col) {
+    char buffer[10];
+    snprintf(buffer, sizeof(buffer), "\033[%d;%dH", row, col);
+    writeSerialCom(buffer);
 }
 
-int serialComAvailable(){
+int serialComAvailable() {
     return Serial.available();
 }
