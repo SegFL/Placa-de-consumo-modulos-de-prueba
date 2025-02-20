@@ -1,6 +1,5 @@
 #include <Arduino.h>
-#include "serialCom/serialCom.h"
-
+#include "userInterface/userInterface.h"
 
 
 
@@ -9,7 +8,7 @@
 
 
 void setup() {
-  serialComInit();
+  userInterfaceInit();
 
   //freeMenu(menu);
 
@@ -18,7 +17,7 @@ void setup() {
 }
 
 void loop() {
-  SerialComUpdate();
+  userInterfaceUpdate();
 
 }
 

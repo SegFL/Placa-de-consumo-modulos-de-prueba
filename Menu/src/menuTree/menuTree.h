@@ -2,13 +2,14 @@
 
 #include <stdlib.h>
 #include <Arduino.h>
-
+#include <cstring>  // Para strncpy
+#include <queue>
 
 // Definición del nodo del árbol del menú
 
 
 typedef struct MenuNode {
-    char title[20];                     // Nombre del menú (ej: "MENU1")
+    char title[30];                     // Nombre del menú (ej: "MENU1")
     char key;                         // Teclas para acceder a los hijos
     struct MenuNode *parent;         // Nodo padre (para volver atrás)
     struct MenuNode *children[5];    // Punteros a hijos (máx 5, ajustable)

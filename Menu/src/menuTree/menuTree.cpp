@@ -1,5 +1,4 @@
 #include "menuTree.h"
-#include <cstring>  // Para strncpy
 
 bool hasChildWithKey(MenuNode *node, char key);
 
@@ -112,7 +111,7 @@ void printNode(MenuNode *node) {
     }
 }
 
-#include <queue>
+
 
 void printFullMenu(MenuNode *root) {
     if (root == nullptr) {
