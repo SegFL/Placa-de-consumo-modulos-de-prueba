@@ -2,7 +2,7 @@
 
 bool hasChildWithKey(MenuNode *node, char key);
 
-MenuNode* create_node(const char* title, char key) {
+MenuNode* create_node(const char* title, char key, int id) {
     MenuNode *node = (MenuNode*)malloc(sizeof(MenuNode));
     if (node == nullptr) {
         return nullptr;
@@ -18,6 +18,7 @@ MenuNode* create_node(const char* title, char key) {
     node->key = key;
     node->parent = nullptr;
     node->child_count = 0;
+    node->id = id;  // Inicializar el ID en 0
 
     return node;
 }
@@ -54,21 +55,21 @@ void add_child(MenuNode *parent, MenuNode *child) {
 }
 
 MenuNode* menuInit() {
-    MenuNode* root = create_node("Bienvenido al menu de configuracion", 'a');
+    MenuNode* root = create_node("Bienvenido al menu de configuracion", 'a',0);
     if (root == nullptr) {
         Serial.println("Error: Failed to create root node");
         return nullptr;
     }
 
-    MenuNode* child1 = create_node("Entradas analogicas", '1');
+    MenuNode* child1 = create_node("Entradas analogicas", '1',1);
     add_child(root, child1);
-    MenuNode* child2 = create_node("Configuracion de WiFi", '2');
+    MenuNode* child2 = create_node("Configuracion de WiFi", '2',2);
     add_child(root, child2);
-    MenuNode* child3 = create_node("Entre SSID", '3');
-    add_child(child2, child3);
-    MenuNode* child4 = create_node("Entre constraseña", '1');
+    MenuNode* child4 = create_node("Entre constraseña", '1',3);
     add_child(child2, child4);
-    MenuNode* child5 = create_node("Configuracion adicional", '3');
+    MenuNode* child3 = create_node("Entre SSID", '2',4);
+    add_child(child2, child3);
+    MenuNode* child5 = create_node("Configuracion adicional", '3',5);
     add_child(root, child5);
     return root;
 }

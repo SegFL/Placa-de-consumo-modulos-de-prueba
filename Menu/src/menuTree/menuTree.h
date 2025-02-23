@@ -14,10 +14,11 @@ typedef struct MenuNode {
     struct MenuNode *parent;         // Nodo padre (para volver atrás)
     struct MenuNode *children[5];    // Punteros a hijos (máx 5, ajustable)
     int child_count;                 // Número de hijos
+    int id;                         // Identificador del nodo
 } MenuNode;
 
 void add_child(MenuNode *parent, MenuNode *child);
-MenuNode* create_node(String title,char key);
+MenuNode* create_node(String title,char key,int id);
 MenuNode* menuInit() ;
 
 void menuUpdate(char caracter, MenuNode **current);
@@ -27,8 +28,3 @@ char* get_title(MenuNode* menu);
 void freeMenu(MenuNode *node);
 void printNode(MenuNode *node);
 void printFullMenu(MenuNode *node) ;
-
-const String MESSAGE_MENU1 = "MENU1";
-const String MESSAGE_MENU2 = "MENU2";
-const String MESSAGE_MENU3 = "MENU3";
-const String MESSAGE_MENU4 = "MENU4";

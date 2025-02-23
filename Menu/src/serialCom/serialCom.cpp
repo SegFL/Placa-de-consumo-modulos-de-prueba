@@ -5,24 +5,14 @@
 void serialComInit() {
     Serial.begin(115200);
 }
-/*
-void serialComUpdate() {
-    char charReceived = readSerialChar();
-    
 
-    if (charReceived != '\0' && menu != nullptr) {  // Verificar que el menú está inicializado
-        menuUpdate(charReceived, &menu);
-        //writeSerialComln(String(*menu->title));
-        clearScreen();
-        printNode(menu);
-    }
-
-}
-*/
 char readSerialChar() {
     if (Serial.available() > 0) { // Verifica si hay datos disponibles en la terminal serie
         char receivedChar = Serial.read(); // Lee un carácter del buffer serie
         Serial.print(receivedChar); // Loopback: Imprime el carácter recibido (opcional)
+        if(receivedChar=='\r'){
+            return '\0';    //Filtro los \r pero si los imprimo en pantalla
+        }
         return receivedChar; // Retorna el carácter leído
     }
     return '\0'; // Retorna un carácter nulo si no hay datos

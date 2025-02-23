@@ -12,7 +12,6 @@ void writeSerialComln(String data);
 void SerialComUpdate();
 int serialComAvailable();
 
-
 void clearScreen();
 
 void serialComInit();

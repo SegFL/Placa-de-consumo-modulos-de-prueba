@@ -5,3 +5,19 @@ Falta agregrale funcionalidades de menu al codigo y diseñaralguna forma de
 que se ejecuten funciones cuando navego por el menu. Lo ideal seria probar las entradas por consola.
 
 Verificar la compatibilidad de este codigo con FREERTOS
+
+MenuInit no deberia crear los nodos del menu. simplemente deberia acetar los parametros para crear elnodo
+UserInterface deberia enviar los nombre,id,key de cada uno.
+
+
+
+
+
+
+
+
+FREERTOS:
+    Se crea un modulo de queues en donde se encapsulan todas las queues, se diseñaralguna   
+    acceso a todas las funciones para recivir y enviar datos a todos los modulo por lo que
+    el modulo de wifi podria usar la queue que utiliza la interfaz y serialCom(Estaria malloc
+    pero es mas facil)
